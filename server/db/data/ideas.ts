@@ -1,9 +1,12 @@
+import { Idea, IdeaData } from '../../../models/ideas.ts'
 import db from '../connection.ts'
-
-export type idea = string
 
 export async function getAllIdeas(limit: number) {
     const ideas = await db('ideas').select().limit(limit)
-    return ideas as idea[]
+    return ideas as Idea[]
 }
 
+export async function createNewIdea({ idea }: IdeaData) {
+    const result = await db('ideas').insert({ idea }, ['id'])
+    return result[0].id
+}
