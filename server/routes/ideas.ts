@@ -1,15 +1,19 @@
-import express from 'express'
-import * as db from '../db/data/ideas.ts'
+import { Router } from "express";
+import { Idea } from "../../models/ideas";
+import * as db from "../db/data/ideas";
 
-const router = express.Router()
+const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const ideas = await db.getAllIdeas()
-    res.json(ideas)
+    const limit: number = parseInt(req.body.limit, 10)
+    if (limit > 10) {
+      res.status(400).json({ message: 'Cannot retrieve more than 10 ideas' })
+    }
+    const ideas: Idea[] = await db.getAllIdeas(limit)
+    res.sendStatus(200).json(ideas)
   } catch (error) {
-    console.error('Error fetching ideas: ', error)
-    res.status(500).json(error)
+    res.status(500).json({ message: `Something went wrong when getting ideas - error: ${error}` })
   }
 })
 
