@@ -2,7 +2,10 @@ import { Idea, IdeaData } from '../../../models/ideas.ts'
 import db from '../connection.ts'
 
 export async function getAllIdeas(limit: number) {
-    const ideas = await db('ideas').select().limit(limit)
+    const ideas = await db('ideas')
+        .select()
+        .orderByRaw('RANDOM()')
+        .limit(limit)
     return ideas as Idea[]
 }
 
