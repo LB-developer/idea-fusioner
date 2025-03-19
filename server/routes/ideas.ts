@@ -6,12 +6,12 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const limit: number = parseInt(req.body.limit, 10)
+    const limit: number = Number(req.query.limit) || 2
     if (limit > 10) {
       res.status(400).json({ message: 'Cannot retrieve more than 10 ideas' })
     }
     const ideas: Idea[] = await db.getAllIdeas(limit)
-    res.sendStatus(200).json(ideas)
+    res.json(ideas)
   } catch (error) {
     res.status(500).json({ message: `Something went wrong when getting ideas - error: ${error}` })
   }
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const newIdea = req.body
-    const id = await db.createNewIdea(newIdea)
+    const id: number = await db.createNewIdea(newIdea)
     res.status(201).json(id)
   } catch (error) {
     console.error('Error: ', error)
